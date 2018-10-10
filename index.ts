@@ -36,6 +36,8 @@ function getRandomInt(){
     return Math.floor(Math.random()*10000000000);
 }
 
+const execPromise = promisify(exec)
+
 export interface Options extends SpawnOptions{
     mode?: 'text'|'json'|'binary'
     formatter?: (param:string)=>any
@@ -222,20 +224,16 @@ export class PythonShell extends EventEmitter{
 
     /**
 	 * checks syntax without executing code
-	 * @param {string} code
-	 * @returns {Promise} rejects w/ stderr if syntax failure
+	 * @returns rejects promise w/ string error output if syntax failure
 	 */
 	static async checkSyntax(code:string){
         const randomInt = getRandomInt();
         const filePath = tmpdir() + sep + `pythonShellSyntaxCheck${randomInt}.py`
-        
-        // todo: replace this with util.promisify (once we no longer support node v7)
-	    return new Promise((resolve, reject) => {
-            writeFile(filePath, code, (err)=>{
-                if (err) reject(err);
-                resolve(this.checkSyntaxFile(filePath));
-            });
-        });
+
+        const writeFilePromise = promisify(writeFile)
+        return writeFilePromise(filePath, code).then(()=>{
+            return this.checkSyntaxFile(filePath)
+        })
 	}
 
 	/**
@@ -244,15 +242,8 @@ export class PythonShell extends EventEmitter{
 	 * @returns {Promise} rejects w/ stderr if syntax failure
 	 */
 	static async checkSyntaxFile(filePath:string){
-
 	    let compileCommand = `${this.defaultPythonPath} -m py_compile ${filePath}`
-
-        return new Promise<string>((resolve, reject) => {
-            exec(compileCommand, (error, stdout, stderr) => {
-                if(error == null) resolve()
-                else reject(stderr)
-            })
-        })
+        return execPromise(compileCommand)
 	}
 
     /**
@@ -293,7 +284,6 @@ export class PythonShell extends EventEmitter{
 
     static getVersion(pythonPath?:string){
         if(!pythonPath) pythonPath = this.defaultPythonPath
-        const execPromise = promisify(exec)
         return execPromise(pythonPath + " --version");
     }
 
