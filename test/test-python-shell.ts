@@ -82,6 +82,7 @@ describe('PythonShell', function () {
         })
     })
 
+<<<<<<< HEAD
     // #158 these tests are failing on appveyor windows node 8/10 python 2/3
     // but they work locally on my windows machine .....
     // these methods are not that important so just commenting out tests untill someone fixes them
@@ -103,6 +104,26 @@ describe('PythonShell', function () {
     //         version.length.should.be.greaterThan(0)
     //     })
     // })
+=======
+    describe("#getVersion", function(){
+        it('should return a string', function(done){
+            PythonShell.getVersion().then((out)=>{
+                const version = out.stdout
+                version.should.be.a.String();
+                version.length.should.be.greaterThan(0)
+                done()
+            })
+        })
+    })
+
+    describe("#getVersionSync", function(){
+        it('should return a string', function(){
+            const version = PythonShell.getVersionSync()
+            version.should.be.a.String();
+            version.length.should.be.greaterThan(0)
+        })
+    })
+>>>>>>> 06ab5bdf96504ad429752a285cea1b6651200650
 
     describe('#runString(script, options)', function () {
         before(()=>{
