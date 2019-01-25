@@ -29,7 +29,6 @@ function extend(obj:{}, ...args) {
     return obj;
 }
 
-<<<<<<< HEAD
 /**
  * gets a random int from 0-10000000000
  */
@@ -37,8 +36,6 @@ function getRandomInt(){
     return Math.floor(Math.random()*10000000000);
 }
 
-=======
->>>>>>> 06ab5bdf96504ad429752a285cea1b6651200650
 const execPromise = promisify(exec)
 
 export interface Options extends SpawnOptions{
@@ -230,13 +227,8 @@ export class PythonShell extends EventEmitter{
 	 * @returns rejects promise w/ string error output if syntax failure
 	 */
 	static async checkSyntax(code:string){
-<<<<<<< HEAD
         const randomInt = getRandomInt();
         const filePath = tmpdir() + sep + `pythonShellSyntaxCheck${randomInt}.py`
-=======
-        let randomInt = PythonShell.getRandomInt();
-        let filePath = tmpdir() + sep + `pythonShellSyntaxCheck${randomInt}.py`
->>>>>>> 06ab5bdf96504ad429752a285cea1b6651200650
 
         const writeFilePromise = promisify(writeFile)
         return writeFilePromise(filePath, code).then(()=>{
